@@ -1,0 +1,43 @@
+#
+# GitHub Actions workflow to test the WeatherService microservice
+#
+
+# This is the name of the workflow (displayed in the left margin under the GitHub Actions tab in GitHub's Web UI)
+# We can call this anything we like
+name: Integrate WeatherService
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - WeatherService/**
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - WeatherService/**
+
+  workflow_dispatch:
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+
+    env:
+      NAME: weatherservice
+      CONTAINER_NAME: weatherservice
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.101
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Test
+        run: dotnet test WeatherService
